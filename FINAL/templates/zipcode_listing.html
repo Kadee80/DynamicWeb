@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+<div class="row">
+
+	<!-- left column -->
+	<div class="span6">
+		<h3>Thefts in : {{ thefts.zipcode}}</h3>
+		
+		{% for theft in thefts %}
+			<p>{{ theft.formatAddress }}</p>
+			
+			{% for part in theft.parts %}
+				{{part|title}}
+			<hr/>
+		{% endfor %}
+		
+	</div>
+
+
+	
+
+	
+
+</div>
+
+{% endblock %}
+
+
+{% block styles %}{% endblock %}
+{% block scripts %}{% endblock %}

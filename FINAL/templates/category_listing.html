@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+
+{% block body %}
+
+
+
+
+	<div class="container" style="padding-top:5%;">
+		<h4>Part: {{ current_part.get('name')|title }}</h3>
+		<table class="table table-bordered table-condensed table-hover">
+			<tr>
+			<th width="40%">WHERE<small><em> was it stolen</em></small></th>
+			<th width="20%">WHEN<small><em> was it stolen</em></small></th>
+			
+			<th width="40%">HOW<small><em> was it locked up</em></small></th>
+		</tr>
+		{% for theft in thefts %}
+			<tr>
+			<td> {{theft.formatAddress}}</td>
+			<td> {{theft.when|replace("T"," ")}}</td>
+			<!--<td>
+			{% for part in theft.parts %}
+				{{ part|replace("_"," ")}} &nbsp;&nbsp;
+			{% endfor %}
+			</td>-->
+			<td>
+			{% for lock in theft.lockMethods %}
+				{{ lock|replace("_"," ")}} &nbsp;&nbsp;
+			{% endfor %}
+			</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+
+	
+	
+
+	
+
+
+
+{% endblock %}
+
+
+{% block styles %}{% endblock %}
+{% block scripts %}{% endblock %}

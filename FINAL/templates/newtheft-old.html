@@ -1,0 +1,217 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<aside  id="panel" class="well span4" >
+  <form method="POST" action="/report" role="form"  >
+
+    <label  for="address">WHERE:</label>
+    <input id="address" type="textbox" value="Brooklyn, NY"><input type="button" class="btn btn-warning btn-xs pull-right" id="DP" value="Drop Pin" onclick="codeAddress()  "><br>
+
+    <label  for="when">WHEN:</label>
+    <input type="datetime-local" id="when" name="when"><br>
+
+
+    <input type="hidden" name="formatAddress" id="formatAddress"  value="">
+    <input type="hidden" name="lat" id="lat"  value="">
+    <input type="hidden" name="lon" id="lon"  value="">
+    <input type="hidden" name="zip" id="zip"  value="">
+
+     <label for "parts">WHAT</label>
+  
+     {% for p in parts|sort %}
+        <div class="checkbox">
+        
+          <label class="checkbox-inline">
+            <input type="checkbox" name="parts" value="{{p}}">
+            {{ p|title }} </label>
+        </div>
+        {% endfor %}
+     
+        <label for "lockMethods">HOW</label>
+     <div class="clear"></div>
+
+    {% for l in lockMethods|sort %}
+        <div class="checkbox">
+        
+          <label class="checkbox-inline">
+            <input type="checkbox" name="lockMethods" value="{{l}}">
+            {{ l|title }} </label>
+        </div>
+        
+        {% endfor %}
+        <div class="clear"></div>
+
+    <button type="submit"  id="submit" disabled=true class="btn btn-warning pull-right">Report</button>
+  </form>
+</aside>
+<div id="map-canvas"></div>
+{% endblock %}
+
+
+{% block styles %}
+
+<style>
+html, body, #map-canvas {
+    height: 100%;
+
+    
+
+  }
+
+#address{
+width:100px;
+
+}
+
+form{
+  font-size: 10px;
+  color:#FFF;
+}
+
+
+.clear{
+clear:both;
+
+}
+
+
+  #panel {
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    height:100%;
+    width:250px;
+    padding:20px;
+    z-index: 5;
+    background-color: rgba(5,5,40,0.8);
+
+    border: 1px solid #999;
+  }
+</style>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?v=3.exp?key={AIzaSyD6av4FAaq7w8dzfA1TieK3r9dWyTRDczs}&sensor=false">
+  </script>
+  <script>
+  var geocoder;
+  var map;
+
+   // Marker sizes are expressed as a Size of X,Y
+  // where the origin of the image (0,0) is located
+  // in the top left of the image.
+
+  // Origins, anchor positions and coordinates of the marker
+  // increase in the X direction to the right and in
+  // the Y direction down.
+  var image = {
+    url: '../static/img/wheel.png',
+    // This marker is 20 pixels wide by 32 pixels tall.
+    size: new google.maps.Size(48, 36),
+    // The origin for this image is 0,0.
+    origin: new google.maps.Point(0,0),
+    // The anchor for this image is the base of the flagpole at 0,32.
+    anchor: new google.maps.Point(12, 36)
+  };
+  /* Shapes define the clickable region of the icon.
+  // The type defines an HTML &lt;area&gt; element 'poly' which
+  // traces out a polygon as a series of X,Y points. The final
+  // coordinate closes the poly by connecting to the first
+  // coordinate.
+  var shape = {
+      coord: [1, 1, 1, 20, 18, 20, 18 , 1],
+      type: 'poly'
+  }; */
+
+
+
+  function initialize() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(40.6938, -73.8383);
+    var mapOptions = {
+      zoom: 12,
+      center: latlng
+    }
+
+    var styles = [
+    {
+      stylers: [
+      
+      { saturation: -100 }
+      ]
+    },{
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [
+      { lightness: 100 },
+      { visibility: "simplified" }
+      ]
+    }];
+    
+
+    
+
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    map.setOptions({styles: styles});
+  }
+
+
+  function codeAddress() {
+   
+          
+
+    var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address +"nyc"}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        // Create our "tiny" marker icon
+          
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+                   icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 1
+    },
+          icon: image,
+          map: map,
+          position: results[0].geometry.location
+
+
+
+
+});
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+      //how should i put this in the database?
+      var lat = (results[0].geometry.location.lat());
+      var lon = (results[0].geometry.location.lng());
+      var fad =(results[0].formatted_address);
+
+      var address = results[0].address_components;
+      var zipcode = address[address.length - 1].long_name;
+      
+      
+      var ad = document.getElementById('formatAddress');
+      ad.value = fad ; 
+      var lt = document.getElementById('lat');
+      lt.value = lat;  
+      var ln = document.getElementById('lon');
+      ln.value = lon ;   
+      var zip = document.getElementById('zip');
+      zip.value = zipcode ;  
+
+
+
+      document.getElementById("submit").disabled=false;
+    });
+  }
+
+  
+
+  google.maps.event.addDomListener(window, 'load', initialize);
+
+  </script>
+
+
+{% endblock %}

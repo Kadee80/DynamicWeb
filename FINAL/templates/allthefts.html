@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="container" style="margin-top:5%;">
+
+
+    <table class="table table-bordered table-condensed table-hover" style="background:#FFF;">
+			<tr>
+			<th width="30%">WHERE<small><em> was it stolen</em></small></th>
+			<th width="20%">WHEN<small><em> was it stolen</em></small></th>
+			<th width="25%">WHAT<small><em> was stolen</em></small></th>
+			<th width="25%">HOW<small><em> was it locked up</em></small></th>
+		</tr>
+		{% for theft in thefts %}
+			<tr>
+			<td><a href="/theft/{{theft.id}}">{{theft.formatAddress}}</a></td>
+			<td> {{theft.when|replace("T"," ")}}</td>
+			<td>
+
+			{% for part in theft.parts %}
+				<a href="/part/{{part|replace(" ","_")}}">{{ part|replace("_"," ")}}</a> &nbsp;&nbsp;
+			{% endfor %}
+			</td>
+			<td>
+			{% for lock in theft.lockMethods %}
+				{{ lock|replace("_"," ")}} &nbsp;&nbsp;
+			{% endfor %}
+			</td>
+			</tr>
+		{% endfor %}
+		</table> 
+</div>
+
+  
+{% endblock %}
+
+
+{% block styles %}{% endblock %}
+{% block scripts %}{% endblock %}

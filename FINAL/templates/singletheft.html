@@ -1,0 +1,80 @@
+ {% extends "layout.html" %}
+
+
+ {% block body %}
+ <div class="row"> 
+
+  <!-- left column -->
+  <div class="span6">
+    <h2>User: {{ user.username }}</h2>
+    <hr>
+    <p>sex: {{ user.sex }}</p>
+    <p>age: {{ user.age }}</p>
+    <p>height: {{ user.feet }}'{{ user.inches }}&quot;</p>
+    <p>weight: {{ user.weight }}</p>
+    <strong>Goals:</strong>
+    <ul>
+      {% for g in user.goals %}
+      <li>{{ g|replace("_"," ") }}</li>
+      {% endfor %}
+    </ul>
+  </p>
+  <hr>
+</div>
+<!-- ADD Ride -->
+<div class="span4 offset1 well">
+  <form method="POST" action="/user/{{ user.id }}/ride">
+    <legend>
+      <h3>Add A Ride</h3>
+      <div class="form-group">
+        <label  for="name">Activity Name:</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Location or Short Description">
+      </div>
+      <div class="form-group">
+        <label  for="time">Time:</label>
+        <input type="text" class="form-control" id="time" name="time" placeholder="Total Time in Minutes">
+      </div>
+      <div class="form-group">
+        <label  for="intensity">Intensity:</label>
+ 
+        <select name="intensity" id="intensity">
+         <option name="light" value="light">Light</option>
+         <option name="moderate" value="moderate">Moderate</option>
+         <option name="strenuous" value="strenuous">Strenuous</option>
+       </select>
+     </div>
+     <div class="form-group">
+      <button type="submit" class="btn btn-success pull-right">Submit</button>
+    </div>
+  </form>
+</div>
+</div>
+<hr>
+<div class = "span12">
+  <h3>Rides ( {{ user.rides|length }} total)</h3>
+  <div class="row"> 
+
+    <!-- DISPLAY Problems -->
+    <div class="col-md-5"> {% for ride in user.rides %}
+      <div class="comment">
+        <p><span class="commenter">{{ ride.name }} </span></p>
+        <p>Total Time: {{ ride.time}} minutes</p>
+        <p>Intensity Level: {{ ride.intensity}}</p>
+        <p><small>added:{{ ride.timestamp.strftime("%a %m/%d %I:%M%p ") }}</small></p>
+        <hr>
+      </div>
+      {% endfor %} </div>
+    </div>
+  </div>
+  {% endblock %}
+
+
+  {% block styles %}
+  <style>
+  th {
+   text-align:right;	
+ }
+
+ </style>
+ {% endblock %}
+ {% block scripts %}{% endblock %}
