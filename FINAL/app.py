@@ -122,7 +122,7 @@ def by_category(part_name):
 	}
 
 	# render and return template
-	return render_template('category_listing.html', **templateData)
+	return render_template('part_listing.html', **templateData)
 
 
 
